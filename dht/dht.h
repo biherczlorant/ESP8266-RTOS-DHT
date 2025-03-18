@@ -19,6 +19,7 @@ typedef enum
     DHT_TYPE_SI7021     //!< Itead SI7021
 } dht_sensor_type_t;
 
+void dht_write_sensor_data_to_display(void);
 
 /**
  * Initialize Config dht pin to be read on specified pin
