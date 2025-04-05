@@ -1,12 +1,11 @@
 #include <dht/dht.h>
+#include <display.h>
 #include <driver/gpio.h>
 #include <esp_log.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 #include <rom/ets_sys.h>  // os_delay_us
 #include <string.h>
-
-#include "display/display.h"
 
 // DHT timer precision in microseconds
 #define DHT_TIMER_INTERVAL 2
@@ -214,8 +213,8 @@ void dht_write_sensor_data_to_display(void) {
     snprintf(tempstr, sizeof(tempstr),
              "%d\xb0"
              "C",
-             temperature);
-    snprintf(humstr, sizeof(humstr), "%d%", humidity);
+             temperature/10);
+    snprintf(humstr, sizeof(humstr), "%d%%", humidity/10);
 
-    display_temp_and_hum_screen(&temperature, &humidity);
+    display_temp_and_hum_screen(&tempstr, &humstr);
 }
