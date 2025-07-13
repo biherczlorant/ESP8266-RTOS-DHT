@@ -18,6 +18,8 @@
 #define debug(fmt, ...) /* (do nothing) */
 #endif
 
+static int16_t m_temperature = 0;
+static int16_t m_humidity = 0;
 /*
  *  Note:
  *  A suitable pull-up resistor should be connected to the selected GPIO line
@@ -201,20 +203,20 @@ esp_err_t dht_init(gpio_num_t pin, bool pull_up) {
 }
 
 void dht_write_sensor_data_to_display(void) {
-    int16_t temperature = 0;
-    int16_t humidity = 0;
-
-    if (dht_read_data(DHT_TYPE_DHT11, 12, &humidity, &temperature) != ESP_OK) {
+    if (dht_read_data(DHT_TYPE_DHT11, 12, &m_humidity, &m_temperature) !=
+        ESP_OK) {
         ESP_LOGE("dht", "couldn't read dht data");
     }
-    char tempstr[10];
-    char humstr[10];
+    char tempstr[32];
+    char humstr[32];
 
     snprintf(tempstr, sizeof(tempstr),
-             "%d\xb0"
+             "Temperature: %d\xb0"
              "C",
-             temperature/10);
-    snprintf(humstr, sizeof(humstr), "%d%%", humidity/10);
+             m_temperature / 10);
+    snprintf(humstr, sizeof(humstr), "Humidity: %d%%", m_humidity / 10);
 
     display_temp_and_hum_screen(&tempstr, &humstr);
 }
+int16_t dht_get_last_temp(void) { return m_temperature; }
+int16_t dht_get_last_humid(void) { return m_humidity; }
